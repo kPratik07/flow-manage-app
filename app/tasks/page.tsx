@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import TaskList from "@/components/TaskList";
 import TaskForm from "@/components/TaskForm";
-import Navbar from "@/components/Navbar";
+import Navbar from "../../components/Navbar";
 
 interface Task {
   id: string;
