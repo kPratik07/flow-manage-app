@@ -32,10 +32,12 @@ const handler = NextAuth({
                     throw new Error("Invalid password");
                 }
 
+                // ✅ return role along with user details
                 return {
                     id: user.id,
                     email: user.email,
                     name: user.name,
+                    role: user.role, // 👈 added role
                 };
             }
         })
@@ -51,12 +53,14 @@ const handler = NextAuth({
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
+                token.role = user.role; // 👈 include role in token
             }
             return token;
         },
         async session({ session, token }) {
             if (token && session.user) {
                 session.user.id = token.id as string;
+                session.user.role = token.role as string; // 👈 add role to session
             }
             return session;
         }

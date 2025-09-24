@@ -33,23 +33,23 @@ export async function POST(request: NextRequest) {
     const token = generateToken({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role,   // ✅ added role here
     })
 
     // Set cookie
     const response = NextResponse.json(
-      { 
+      {
         user: {
           id: user.id,
           name: user.name,
           email: user.email,
-          role: user.role,
+          role: user.role,   // ✅ added role here
         },
-        message: 'Login successful' 
+        message: 'Login successful'
       },
       { status: 200 }
     )
-    
+
     response.cookies.set('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
