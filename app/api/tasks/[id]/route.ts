@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { prisma } from '@/lib/db'
-import { verifyToken } from '@/lib/auth'
-import { updateTaskSchema } from '@/utils/validation'
+import { prisma } from '../../../../lib/db'
+import { verifyToken } from '../../../../lib/auth'
+import { updateTaskSchema } from '../../../../utils/validation'
 
 // ✅ Define request body type for updates
 type UpdateTaskBody = {

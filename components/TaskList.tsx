@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import EditTaskForm from "./EditTaskForm";
-import "../styles/TaskList.css"; // Changed from @/styles to relative path
+import "../styles/TaskList.css";
 
 interface Task {
   id: string;

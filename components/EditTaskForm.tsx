@@ -1,7 +1,5 @@
-"use client";
-
 import { useState } from "react";
-import "@/styles/TaskForm.css";
+import "../styles/TaskForm.css";
 
 interface Task {
   id: string;
