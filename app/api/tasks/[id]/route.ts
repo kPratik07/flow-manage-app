@@ -4,11 +4,14 @@ import { prisma } from '@/lib/db'
 import { verifyToken } from '@/lib/auth'
 import { updateTaskSchema } from '@/utils/validation'
 
+// ✅ GET Task by ID
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔹 changed type
 ) {
   try {
+    const { id } = await context.params; // 🔹 await params
+
     const token = request.cookies.get('token')?.value
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -20,10 +23,7 @@ export async function GET(
     }
 
     const task = await prisma.task.findFirst({
-      where: {
-        id: params.id,
-        userId: payload.userId,
-      },
+      where: { id, userId: payload.userId },
       select: {
         id: true,
         title: true,
@@ -33,7 +33,7 @@ export async function GET(
         dueDate: true,
         createdAt: true,
         updatedAt: true,
-      }
+      },
     })
 
     if (!task) {
@@ -43,82 +43,70 @@ export async function GET(
     return NextResponse.json({ task })
   } catch (error) {
     console.error('Get task error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
+// ✅ UPDATE Task
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔹 changed type
 ) {
   try {
+    const { id } = await context.params; // 🔹 await params
     const session = await getServerSession()
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
+    await updateTaskSchema.parseAsync(body) // 🔹 ensure validation still used
+
     const task = await prisma.task.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         title: body.title,
         description: body.description,
         priority: body.priority,
         status: body.status,
-        dueDate: new Date(body.dueDate),
+        dueDate: body.dueDate ? new Date(body.dueDate) : null,
       },
     })
 
     return NextResponse.json(task)
   } catch (error) {
     console.error('Update task error:', error)
-    return NextResponse.json(
-      { error: 'Failed to update task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to update task' }, { status: 500 })
   }
 }
 
+// ✅ DELETE Task
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> } // 🔹 changed type
 ) {
   try {
+    const { id } = await context.params; // 🔹 await params
     const session = await getServerSession()
 
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Verify task ownership before deletion
+    // Verify ownership
     const task = await prisma.task.findFirst({
-      where: {
-        id: params.id,
-        user: {
-          email: session.user.email
-        }
-      }
+      where: { id, user: { email: session.user.email } },
     })
 
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
 
-    await prisma.task.delete({
-      where: {
-        id: params.id
-      }
-    })
+    await prisma.task.delete({ where: { id } })
 
     return NextResponse.json({ message: 'Task deleted successfully' })
   } catch (error) {
     console.error('Error deleting task:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete task' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 })
   }
 }
