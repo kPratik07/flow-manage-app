@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/db";
 
+// ✅ Add a type for the request body
+type TaskRequestBody = {
+  title: string;
+  description?: string;
+  priority?: string;
+  status?: string;
+  dueDate?: string;
+};
+
 export async function GET() {
   try {
     const session = await getServerSession();
@@ -47,7 +56,8 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const body = await request.json();
+    // ✅ Explicitly cast body to TaskRequestBody
+    const body = (await request.json()) as TaskRequestBody;
 
     const user = await prisma.user.findUnique({
       where: { email: session.user.email }

@@ -4,13 +4,22 @@ import { prisma } from '@/lib/db'
 import { verifyToken } from '@/lib/auth'
 import { updateTaskSchema } from '@/utils/validation'
 
+// ✅ Define request body type for updates
+type UpdateTaskBody = {
+  title: string
+  description?: string
+  priority?: string
+  status?: string
+  dueDate?: string
+}
+
 // ✅ GET Task by ID
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> } // 🔹 changed type
+  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
 ) {
   try {
-    const { id } = await context.params; // 🔹 await params
+    const { id } = await context.params // 🔹 await since it's a Promise
 
     const token = request.cookies.get('token')?.value
     if (!token) {
@@ -50,17 +59,17 @@ export async function GET(
 // ✅ UPDATE Task
 export async function PUT(
   request: Request,
-  context: { params: Promise<{ id: string }> } // 🔹 changed type
+  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
 ) {
   try {
-    const { id } = await context.params; // 🔹 await params
+    const { id } = await context.params
     const session = await getServerSession()
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    await updateTaskSchema.parseAsync(body) // 🔹 ensure validation still used
+    const body = (await request.json()) as UpdateTaskBody
+    await updateTaskSchema.parseAsync(body)
 
     const task = await prisma.task.update({
       where: { id },
@@ -83,10 +92,10 @@ export async function PUT(
 // ✅ DELETE Task
 export async function DELETE(
   request: Request,
-  context: { params: Promise<{ id: string }> } // 🔹 changed type
+  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
 ) {
   try {
-    const { id } = await context.params; // 🔹 await params
+    const { id } = await context.params
     const session = await getServerSession()
 
     if (!session?.user?.email) {
