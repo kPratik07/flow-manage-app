@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import "@/styles/Navbar.css";
+import "../styles/Navbar.css";
 
 export default function Navbar() {
   return (
