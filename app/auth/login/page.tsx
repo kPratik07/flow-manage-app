@@ -1,8 +1,8 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import "./LoginPage.css";
 
 interface FormData {
@@ -64,36 +64,26 @@ export default function LoginPage() {
   return (
     <div className="login-container">
       <div className="login-box">
-        <h2>Sign in to your account</h2>
-        <p>
-          Or <a href="/auth/signup">create a new account</a>
-        </p>
-
+        <h2>Welcome back</h2>
+        <p>Enter your credentials to access your account</p>
         <form className="login-form" onSubmit={handleSubmit}>
           <input
-            id="email"
-            name="email"
             type="email"
-            placeholder="Email address"
-            required
+            name="email"
             value={formData.email}
             onChange={handleChange}
-            autoComplete="off"
-          />
-
-          <input
-            id="password"
-            name="password"
-            type="password"
-            placeholder="Password"
+            placeholder="Email address"
             required
+          />
+          <input
+            type="password"
+            name="password"
             value={formData.password}
             onChange={handleChange}
-            autoComplete="off"
+            placeholder="Password"
+            required
           />
-
           {error && <div className="error-message">{error}</div>}
-
           <button
             type="submit"
             disabled={isLoading}
