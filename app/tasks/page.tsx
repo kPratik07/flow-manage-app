@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TaskList from "@/components/TaskList";
-import TaskForm from "@/components/TaskForm";
+import TaskList from "../../components/TaskList";
+import TaskForm from "../../components/TaskForm";
 import Navbar from "../../components/Navbar";
+import "../../styles/TaskPage.css";
 
 interface Task {
   id: string;
