@@ -5,9 +5,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import "./LoginPage.css";
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: "",
     password: "",
   });
@@ -49,9 +54,7 @@ export default function LoginPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement & { name: string }; // 👈 extend type
-    const { name, value } = target;
-
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
