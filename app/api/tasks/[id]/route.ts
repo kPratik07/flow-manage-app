@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { prisma } from '../../../../lib/db'
-import { verifyToken } from '../../../../lib/auth'
-import { updateTaskSchema } from '../../../../utils/validation'
+import { verifyToken, TokenPayload } from '../../../../lib/auth'
 
 // ✅ Define request body type for updates
 type UpdateTaskBody = {
@@ -13,13 +12,19 @@ type UpdateTaskBody = {
   dueDate?: string
 }
 
+interface TaskParams {
+  params: {
+    id: string
+  }
+}
+
 // ✅ GET Task by ID
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
+  { params }: TaskParams // 🔹 match Next.js typing
 ) {
   try {
-    const { id } = await context.params // 🔹 await since it's a Promise
+    const { id } = params // 🔹 await since it's a Promise
 
     const token = request.cookies.get('token')?.value
     if (!token) {
@@ -58,21 +63,26 @@ export async function GET(
 
 // ✅ UPDATE Task
 export async function PUT(
-  request: Request,
-  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
+  request: NextRequest,
+  { params }: TaskParams // 🔹 match Next.js typing
 ) {
   try {
-    const { id } = await context.params
-    const session = await getServerSession()
-    if (!session?.user?.email) {
+    const { id } = params
+    const token = request.cookies.get('token')?.value
+
+    if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const payload = verifyToken(token) as TokenPayload
+
     const body = (await request.json()) as UpdateTaskBody
-    await updateTaskSchema.parseAsync(body)
 
     const task = await prisma.task.update({
-      where: { id },
+      where: {
+        id,
+        userId: payload.userId,
+      },
       data: {
         title: body.title,
         description: body.description,
