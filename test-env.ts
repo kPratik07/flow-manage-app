@@ -1,4 +1,16 @@
 import { config } from 'dotenv'
 config()
 
-console.log('DATABASE_URL:', process.env.DATABASE_URL)
+// Optional: Add type safety for environment variables
+declare global {
+    namespace NodeJS {
+        interface ProcessEnv {
+            DATABASE_URL: string;
+            NEXTAUTH_SECRET: string;
+            NEXTAUTH_URL?: string;  // Make it optional
+            NODE_ENV: 'development' | 'production' | 'test';
+        }
+    }
+}
+
+export { }  // Make this a module
