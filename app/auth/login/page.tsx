@@ -54,10 +54,10 @@ export default function LoginPage() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
+    const { name, value } = e.currentTarget;
     setFormData((prev) => ({
       ...prev,
-      [target.name]: target.value,
+      [name]: value,
     }));
   };
 
