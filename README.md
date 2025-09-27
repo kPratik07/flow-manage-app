@@ -1,6 +1,6 @@
-# 🌊 Flow Manage
+# 🌊 Flow Manage App
 
-A modern task management application for efficient workflow organization and tracking. Built with Next.js, Prisma, and MongoDB to help you stay productive and organized.
+Flow Manage is a full‑stack task management application that simplifies workflow organization and boosts team productivity. It offers secure authentication, password recovery via email, and comprehensive CRUD operations for tasks — including priority, status tracking, and due dates. Built with Next.js, Prisma, MongoDB, and Resend for reliable email delivery
 
 ## ✨ Features
 
@@ -17,6 +17,7 @@ A modern task management application for efficient workflow organization and tra
 - 🗃️ Prisma ORM
 - 🍃 MongoDB
 - 🔒 NextAuth.js for authentication
+- 📧 Resend for email service
 
 ## 📁 Project Structure
 

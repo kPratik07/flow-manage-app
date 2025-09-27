@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import "./LoginPage.css";
 
 interface FormData {
@@ -92,6 +93,10 @@ export default function LoginPage() {
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
         </form>
+
+        <div className="auth-links">
+          <Link href="/auth/forgot-password">Forgot Password?</Link>
+        </div>
       </div>
     </div>
   );

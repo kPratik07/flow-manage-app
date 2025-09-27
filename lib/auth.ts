@@ -3,13 +3,14 @@ import bcrypt from 'bcryptjs';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret';
 
-export const generateToken = (payload: any) => {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
+export const generateToken = (payload: any, expiresIn: string = '7d') => {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn });
 };
 
 export interface TokenPayload extends JwtPayload {
   userId: string;
   email: string;
+  type?: string;
 }
 
 export function verifyToken(token: string): TokenPayload {
