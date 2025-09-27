@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import TaskList from "../../components/TaskList";
 import TaskForm from "../../components/TaskForm";
 import Navbar from "../../components/Navbar";
@@ -17,13 +19,27 @@ interface Task {
 }
 
 export default function TasksPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [showTaskForm, setShowTaskForm] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
 
   const fetchTasks = async () => {
     try {
       const response = await fetch("/api/tasks");
       if (!response.ok) {
+        if (response.status === 401) {
+          // Unauthorized - redirect to login
+          router.push("/auth/login");
+          return;
+        }
         throw new Error("Failed to fetch tasks");
       }
       const data = await response.json();
@@ -34,8 +50,10 @@ export default function TasksPage() {
   };
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if (session) {
+      fetchTasks();
+    }
+  }, [session]);
 
   const handleTaskCreated = () => {
     setShowTaskForm(false);
@@ -54,6 +72,23 @@ export default function TasksPage() {
       console.error("Error deleting task:", error);
     }
   };
+
+  // Show loading while checking authentication
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if not authenticated (will redirect)
+  if (!session) {
+    return null;
+  }
 
   return (
     <>

@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   typescript: {
-    ignoreBuildErrors: true, // Temporarily ignore type errors for deployment
+    ignoreBuildErrors: false, // Enable type checking for production
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false, // Enable ESLint checking for production
+  },
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
   },
 };
 

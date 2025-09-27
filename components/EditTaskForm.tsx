@@ -92,6 +92,7 @@ export default function EditTaskForm({
             <option value="LOW">Low</option>
             <option value="MEDIUM">Medium</option>
             <option value="HIGH">High</option>
+            <option value="URGENT">Urgent</option>
           </select>
         </div>
 
@@ -107,6 +108,7 @@ export default function EditTaskForm({
             <option value="PENDING">Pending</option>
             <option value="IN_PROGRESS">In Progress</option>
             <option value="COMPLETED">Completed</option>
+            <option value="CANCELLED">Cancelled</option>
           </select>
         </div>
       </div>
@@ -115,7 +117,7 @@ export default function EditTaskForm({
         <label className="form-label">Due Date</label>
         <input
           type="date"
-          value={editedTask.dueDate.split("T")[0]}
+          value={editedTask.dueDate ? editedTask.dueDate.split("T")[0] : ""}
           onChange={(e) =>
             setEditedTask({ ...editedTask, dueDate: e.target.value })
           }

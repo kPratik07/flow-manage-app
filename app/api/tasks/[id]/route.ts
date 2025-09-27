@@ -12,19 +12,14 @@ type UpdateTaskBody = {
   dueDate?: string
 }
 
-interface TaskParams {
-  params: {
-    id: string
-  }
-}
 
 // ✅ GET Task by ID
 export async function GET(
   request: NextRequest,
-  { params }: TaskParams // 🔹 match Next.js typing
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params // 🔹 await since it's a Promise
+    const { id } = await params
 
     const token = request.cookies.get('token')?.value
     if (!token) {
@@ -64,10 +59,10 @@ export async function GET(
 // ✅ UPDATE Task
 export async function PUT(
   request: NextRequest,
-  { params }: TaskParams // 🔹 match Next.js typing
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const token = request.cookies.get('token')?.value
 
     if (!token) {
@@ -102,10 +97,10 @@ export async function PUT(
 // ✅ DELETE Task
 export async function DELETE(
   request: Request,
-  context: { params: Promise<{ id: string }> } // 🔹 match Next.js typing
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params
+    const { id } = await params
     const session = await getServerSession()
 
     if (!session?.user?.email) {
