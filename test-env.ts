@@ -8,7 +8,6 @@ declare global {
             DATABASE_URL: string;
             NEXTAUTH_SECRET: string;
             NEXTAUTH_URL?: string;  // Make it optional
-            NODE_ENV: 'development' | 'production' | 'test';
         }
     }
 }
