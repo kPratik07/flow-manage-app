@@ -1,18 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import "../login/LoginPage.css";
 
-export default function ResetPasswordPage() {
+function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -88,7 +89,7 @@ export default function ResetPasswordPage() {
       <div className="login-box">
         <h2>Reset Password</h2>
         <p>Enter your new password below.</p>
-        
+
         <form className="login-form" onSubmit={handleSubmit}>
           <input
             type="password"
@@ -98,7 +99,7 @@ export default function ResetPasswordPage() {
             placeholder="New password"
             required
           />
-          
+
           <input
             type="password"
             name="confirmPassword"
@@ -107,10 +108,10 @@ export default function ResetPasswordPage() {
             placeholder="Confirm new password"
             required
           />
-          
+
           {error && <div className="error-message">{error}</div>}
           {message && <div className="success-message">{message}</div>}
-          
+
           <button
             type="submit"
             disabled={isLoading}
@@ -125,5 +126,13 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordPage />
+    </Suspense>
   );
 }
